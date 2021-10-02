@@ -8,10 +8,10 @@ public:
     int height;
     Node *left;
     Node *right;
-    Node(T data, int height)
+    Node(T data)
     {
         this->data = data;
-        this->height = height;
+        this->height = 1;
         this->left = nullptr;
         this->right = nullptr;
     }
@@ -25,40 +25,6 @@ public:
     {
         root = nullptr;
     }
-    Node<T> *rightRotate(Node<T> *node)
-    {
-        Node<T> *temp = node->left;
-        node->left = node->left->right;
-        temp->right = node;
-        node->height = calculateHeight(node);
-        temp->height = calculateHeight(temp);
-        return temp;
-    }
-    Node<T> *leftRotate(Node<T> *node)
-    {
-        Node<T> *temp = node->right;
-        node->right = node->right->left;
-        temp->left = node;
-        node->height = calculateHeight(node);
-        temp->height = calculateHeight(temp);
-        return temp;
-    }
-    Node<T> *rightleftRotate(Node<T> *node)
-    {
-        if (node->right)
-        {
-            node->right = rightRotate(node->right);
-            return leftRotate(node);
-        }
-    }
-    Node<T> *leftRightRotate(Node<T> *node)
-    {
-        if (node->left)
-        {
-            node->left = leftRotate(node->left);
-            return rightRotate(node);
-        }
-    }
     int getHeight(Node<T> *node)
     {
         if (node == nullptr)
@@ -68,18 +34,54 @@ public:
     }
     void calculateHeight(Node<T> *node)
     {
-        node->height = 1 + max(getheight(node->left),
+        node->height = 1 + max(getHeight(node->left),
                                getHeight(node->right));
     }
+    Node<T> *rightRotate(Node<T> *node)
+    {
+       
+        Node<T> *temp = node->left;
+        node->left = node->left->right;
+        temp->right = node;
+        calculateHeight(node);
+        calculateHeight(temp);
+        return temp;
+    }
+    Node<T> *leftRotate(Node<T> *node)
+    {
+        Node<T> *temp = node->right;
+        node->right = node->right->left;
+        temp->left = node;
+        calculateHeight(node);
+        calculateHeight(temp);
+        return temp;
+    }
+    Node<T> *rightleftRotate(Node<T> *node)
+    {
+        // if (node->right)
+        // {
+            node->right = rightRotate(node->right);
+            return leftRotate(node);
+        // }
+    }
+    Node<T> *leftRightRotate(Node<T> *node)
+    {
+        // if (node->left)
+        // {
+            node->left = leftRotate(node->left);
+            return rightRotate(node);
+        // }
+    }
+    
     int getBalanceFactor(Node<T> *node)
     {
-        return (getheight(node->left) - getHeight(node->right));
+        return (getHeight(node->left) - getHeight(node->right));
     }
     Node<T> *insert(Node<T> *node, T data)
     {
         if (!node)
         {
-            return new Node(data, 0);
+            return new Node<T>(data);
         }
         if (data <= node->data)
         {
@@ -93,19 +95,20 @@ public:
         int bf = getBalanceFactor(node);
         if (bf > 1 && data <= node->left->data)
         {
-            return rightleftRotate(node);
-        }
-        else if (bf > 1 && data > node->right->data)
-        {
-            return leftRotate(node);
-        }
-        else if (bf < 1 && data <= node->left->data)
-        {
             return rightRotate(node);
         }
-        else if (bf < 1 && data > node->right->data)
+        else if (bf > 1 && data > node->left->data)
         {
             return leftRightRotate(node);
+        }
+        else if (bf < -1 && data <= node->right->data)
+        {
+            return rightleftRotate(node);
+              
+        }
+        else if (bf < -1 && data > node->right->data)
+        {
+            return leftRotate(node);
         }
         return node;
     }
@@ -125,8 +128,10 @@ int main()
             cout << "Enter value: ";
             cin >> val;
             tree->root = tree->insert(tree->root, val);
+            break;
         case 10:
             return 0;
+            break;
         }
     }
 }

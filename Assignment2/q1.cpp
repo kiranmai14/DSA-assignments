@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 template <typename T>
 class Node
@@ -39,7 +39,7 @@ public:
     }
     Node<T> *rightRotate(Node<T> *node)
     {
-       
+
         Node<T> *temp = node->left;
         node->left = node->left->right;
         temp->right = node;
@@ -58,21 +58,15 @@ public:
     }
     Node<T> *rightleftRotate(Node<T> *node)
     {
-        // if (node->right)
-        // {
-            node->right = rightRotate(node->right);
-            return leftRotate(node);
-        // }
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
     }
     Node<T> *leftRightRotate(Node<T> *node)
     {
-        // if (node->left)
-        // {
-            node->left = leftRotate(node->left);
-            return rightRotate(node);
-        // }
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
     }
-    
+
     int getBalanceFactor(Node<T> *node)
     {
         return (getHeight(node->left) - getHeight(node->right));
@@ -104,9 +98,78 @@ public:
         else if (bf < -1 && data <= node->right->data)
         {
             return rightleftRotate(node);
-              
         }
         else if (bf < -1 && data > node->right->data)
+        {
+            return leftRotate(node);
+        }
+        return node;
+    }
+    Node<T> *minVal(Node<T> *node)
+    {
+        Node<T> * temp = node;
+        while (temp->left || temp->right)
+        {
+            if (temp->left)
+                temp = temp->left;
+            else
+                temp = temp->right;
+        }
+        return temp;
+    }
+    Node<T> *deleteNode(Node<T> *node, T data)
+    {
+        if (!node)
+            return nullptr;
+        if (data < node->data)
+        {
+            node->left = deleteNode(node->left, data);
+        }
+        else if (data > node->data)
+        {
+            node->right = deleteNode(node->right, data);
+        }
+        else
+        {
+            if (!node->left && !node->right)
+            {
+                delete node;
+                return nullptr;
+            }
+            if (!node->left)
+            {
+                Node<T> *temp = node->right;
+                delete node;
+                return temp;
+            }
+            else if (!node->right)
+            {
+                Node<T> *temp = node->left;
+                delete node;
+                return temp;
+            }
+            else
+            {
+                Node<T> *minValptr = minVal(node->right);
+                node->data = minValptr->data;
+                node->right = deleteNode(node->right, minValptr->data);
+            }
+        }
+        calculateHeight(node);
+        int bf = getBalanceFactor(node);
+        if (bf > 1 && getBalanceFactor(node->left) > 0)
+        {
+            return rightRotate(node);
+        }
+        else if (bf > 1 && getBalanceFactor(node->left) < 0)
+        {
+            return leftRightRotate(node);
+        }
+        else if (bf < -1 && getBalanceFactor(node->right) > 0)
+        {
+            return rightleftRotate(node);
+        }
+        else if (bf < -1 && data > getBalanceFactor(node->right) < 0)
         {
             return leftRotate(node);
         }
@@ -128,6 +191,11 @@ int main()
             cout << "Enter value: ";
             cin >> val;
             tree->root = tree->insert(tree->root, val);
+            break;
+        case 2:
+            cout << "Enter value: ";
+            cin >> val;
+            tree->root = tree->deleteNode(tree->root, val);
             break;
         case 10:
             return 0;

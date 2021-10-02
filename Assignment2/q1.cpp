@@ -108,12 +108,13 @@ public:
     Node<T> *minVal(Node<T> *node)
     {
         Node<T> * temp = node;
-        while (temp->left || temp->right)
+        while (temp->left)
         {
-            if (temp->left)
+            // if (temp->left)
+            // temp2=temp;
                 temp = temp->left;
-            else
-                temp = temp->right;
+            // else
+            //     temp = temp->right;
         }
         return temp;
     }
@@ -157,7 +158,7 @@ public:
         }
         calculateHeight(node);
         int bf = getBalanceFactor(node);
-        if (bf > 1 && getBalanceFactor(node->left) > 0)
+        if (bf > 1 && getBalanceFactor(node->left) >= 0)
         {
             return rightRotate(node);
         }
@@ -169,7 +170,7 @@ public:
         {
             return rightleftRotate(node);
         }
-        else if (bf < -1 && data > getBalanceFactor(node->right) < 0)
+        else if (bf < -1 && data > getBalanceFactor(node->right) <= 0)
         {
             return leftRotate(node);
         }
@@ -181,7 +182,7 @@ int main()
     AVLTree<int> *tree = new AVLTree<int>();
     while (1)
     {
-        cout << "1.Insert 10.exit\n";
+        cout << "1.Insert 2.Delete 10.exit\n";
         int option;
         cin >> option;
         int val;

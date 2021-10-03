@@ -5,6 +5,7 @@ class Node
 {
 public:
     T data;
+    int count;
     int height;
     Node *left;
     Node *right;
@@ -14,6 +15,7 @@ public:
         this->height = 1;
         this->left = nullptr;
         this->right = nullptr;
+        this->count = 1;
     }
 };
 template <class T>
@@ -77,7 +79,12 @@ public:
         {
             return new Node<T>(data);
         }
-        if (data <= node->data)
+        if (data == node->data)
+        {
+            node->count++;
+            return node;
+        }
+        if (data < node->data)
         {
             node->left = insert(node->left, data);
         }
@@ -107,14 +114,10 @@ public:
     }
     Node<T> *minVal(Node<T> *node)
     {
-        Node<T> * temp = node;
+        Node<T> *temp = node;
         while (temp->left)
         {
-            // if (temp->left)
-            // temp2=temp;
-                temp = temp->left;
-            // else
-            //     temp = temp->right;
+            temp = temp->left;
         }
         return temp;
     }
@@ -132,28 +135,37 @@ public:
         }
         else
         {
-            if (!node->left && !node->right)
+            if (node->count > 1)
             {
-                delete node;
-                return nullptr;
-            }
-            if (!node->left)
-            {
-                Node<T> *temp = node->right;
-                delete node;
-                return temp;
-            }
-            else if (!node->right)
-            {
-                Node<T> *temp = node->left;
-                delete node;
-                return temp;
+                node->count--;
             }
             else
             {
-                Node<T> *minValptr = minVal(node->right);
-                node->data = minValptr->data;
-                node->right = deleteNode(node->right, minValptr->data);
+                if (!node->left && !node->right)
+                {
+                    delete node;
+                    return nullptr;
+                }
+                if (!node->left)
+                {
+                    Node<T> *temp = node->right;
+                    delete node;
+                    return temp;
+                }
+                else if (!node->right)
+                {
+                    Node<T> *temp = node->left;
+                    delete node;
+                    return temp;
+                }
+                else
+                {
+                    Node<T> *minValptr = minVal(node->right);
+                    node->data = minValptr->data;
+                    node->count = minValptr->count;
+                    minValptr->count = 1;
+                    node->right = deleteNode(node->right, minValptr->data);
+                }
             }
         }
         calculateHeight(node);
@@ -170,7 +182,7 @@ public:
         {
             return rightleftRotate(node);
         }
-        else if (bf < -1 && data > getBalanceFactor(node->right) <= 0)
+        else if (bf < -1 && getBalanceFactor(node->right) <= 0)
         {
             return leftRotate(node);
         }

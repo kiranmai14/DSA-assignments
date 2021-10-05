@@ -188,16 +188,36 @@ public:
         }
         return node;
     }
+    bool search(Node<T> *node, T data)
+    {
+        if (!node)
+        {
+            return 0;
+        }
+        if (data == node->data)
+        {
+            return 1;
+        }
+        if (data < node->data)
+        {
+            return search(node->left, data);
+        }
+        else
+        {
+            return search(node->right, data);
+        }
+    }
 };
 int main()
 {
     AVLTree<int> *tree = new AVLTree<int>();
     while (1)
     {
-        cout << "1.Insert 2.Delete 10.exit\n";
+        cout << "1.Insert 2.Delete 3.Search 10.exit\n";
         int option;
         cin >> option;
         int val;
+
         switch (option)
         {
         case 1:
@@ -209,6 +229,14 @@ int main()
             cout << "Enter value: ";
             cin >> val;
             tree->root = tree->deleteNode(tree->root, val);
+            break;
+        case 3:
+            cout << "Enter value: ";
+            cin >> val;
+            if (tree->search(tree->root, val))
+                cout << "Element found!!\n";
+            else
+                cout << "Element not found\n";
             break;
         case 10:
             return 0;

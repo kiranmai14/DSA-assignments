@@ -188,15 +188,15 @@ public:
         }
         return node;
     }
-    bool search(Node<T> *node, T data)
+    Node<T> *search(Node<T> *node, T data)
     {
         if (!node)
         {
-            return 0;
+            return nullptr;
         }
         if (data == node->data)
         {
-            return 1;
+            return node;
         }
         if (data < node->data)
         {
@@ -207,13 +207,21 @@ public:
             return search(node->right, data);
         }
     }
+    void count(Node<T> *node, T data)
+    {
+        Node<T> *temp = this->search(node, data);
+        if (temp)
+            cout << temp->count << "\n";
+        else
+            cout << "Element not found\n";
+    }
 };
 int main()
 {
     AVLTree<int> *tree = new AVLTree<int>();
     while (1)
     {
-        cout << "1.Insert 2.Delete 3.Search 10.exit\n";
+        cout << "1.Insert 2.Delete 3.Search 4.Count 10.exit\n";
         int option;
         cin >> option;
         int val;
@@ -237,6 +245,11 @@ int main()
                 cout << "Element found!!\n";
             else
                 cout << "Element not found\n";
+            break;
+        case 4:
+            cout << "Enter value: ";
+            cin >> val;
+            tree->count(tree->root, val);
             break;
         case 10:
             return 0;

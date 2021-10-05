@@ -215,17 +215,39 @@ public:
         else
             cout << "Element not found\n";
     }
+    Node<T> *lowerBound(Node<T> *node, T data)
+    {
+        if(!node) return nullptr;
+        if(node->data == data){
+            return node;
+        }
+        if (data < node->data)
+        {
+            Node<T> *left = lowerBound(node->left, data);
+            if(!left)
+                return node;
+            else
+                return left;
+        }
+        else
+        {
+            Node<T> *right = lowerBound(node->right, data);
+            if(!right)
+                return nullptr;
+            else return right;
+        }
+    }
 };
 int main()
 {
     AVLTree<int> *tree = new AVLTree<int>();
     while (1)
     {
-        cout << "1.Insert 2.Delete 3.Search 4.Count 10.exit\n";
+        cout << "1.Insert 2.Delete 3.Search 4.Count 5.lower_bound 6.upper_bound 10.exit\n";
         int option;
         cin >> option;
         int val;
-
+        Node<int> *res;
         switch (option)
         {
         case 1:
@@ -250,6 +272,15 @@ int main()
             cout << "Enter value: ";
             cin >> val;
             tree->count(tree->root, val);
+            break;
+         case 5:
+            cout << "Enter value: ";
+            cin >> val;
+            res = tree->lowerBound(tree->root, val);
+            if(res)
+                cout<<res->data<<"\n";
+            else
+                cout<<"Cannot found\n";
             break;
         case 10:
             return 0;

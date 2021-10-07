@@ -217,14 +217,16 @@ public:
     }
     Node<T> *lowerBound(Node<T> *node, T data)
     {
-        if(!node) return nullptr;
-        if(node->data == data){
+        if (!node)
+            return nullptr;
+        if (node->data == data)
+        {
             return node;
         }
         if (data < node->data)
         {
             Node<T> *left = lowerBound(node->left, data);
-            if(!left)
+            if (!left)
                 return node;
             else
                 return left;
@@ -232,9 +234,31 @@ public:
         else
         {
             Node<T> *right = lowerBound(node->right, data);
-            if(!right)
+            if (!right)
                 return nullptr;
-            else return right;
+            else
+                return right;
+        }
+    }
+    Node<T> *upperBound(Node<T> *node, T data)
+    {
+        if (!node)
+            return nullptr;
+        if (data >= node->data)
+        {
+            Node<T> *right = upperBound(node->right, data);
+            if (!right)
+                return nullptr;
+            else
+                return right;
+        }
+        else
+        {
+            Node<T> *left = upperBound(node->left, data);
+            if (!left)
+                return node;
+            else
+                return left;
         }
     }
 };
@@ -273,14 +297,23 @@ int main()
             cin >> val;
             tree->count(tree->root, val);
             break;
-         case 5:
+        case 5:
             cout << "Enter value: ";
             cin >> val;
             res = tree->lowerBound(tree->root, val);
-            if(res)
-                cout<<res->data<<"\n";
+            if (res)
+                cout << res->data << "\n";
             else
-                cout<<"Cannot found\n";
+                cout << "Cannot found\n";
+            break;
+        case 6:
+            cout << "Enter value: ";
+            cin >> val;
+            res = tree->upperBound(tree->root, val);
+            if (res)
+                cout << res->data << "\n";
+            else
+                cout << "Cannot found\n";
             break;
         case 10:
             return 0;

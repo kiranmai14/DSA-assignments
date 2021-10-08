@@ -18,6 +18,20 @@ public:
         this->count = 1;
     }
 };
+class student {
+    public:
+    int age;
+    string name;
+}
+bool operator >= (student a,student b){
+    return(a.age == b.age);
+}
+bool operator == (student a,student b){
+    return(a.age >= b.age);
+}
+bool operator < (student a,student b){
+    return(a.age < b.age);
+}
 template <class T>
 class AVLTree
 {

@@ -333,6 +333,25 @@ public:
         }
         kthLargestElement(node->left, count, k);
     }
+    int countInRange(Node<T> *node, T l, T r)
+    {
+        if (!node)
+            return 0;
+        if (node->data == l && l == r)
+            return 1;
+        if (node->data >= l && node->data <= r)
+        {
+            return 1 + countInRange(node->left, l, r) + countInRange(node->right, l, r);
+        }
+        if (node->data > r)
+        {
+            return countInRange(node->left, l, r);
+        }
+        else
+        {
+            return countInRange(node->right, l, r);
+        }
+    }
 };
 int main()
 {
@@ -356,7 +375,7 @@ int main()
     while (1)
     {
         cout << "1.Insert 2.Delete 3.Search 4.Count 5.lower_bound 6.upper_bound\n7.Closest element 8.KthLargest Element 9.count elements in range 10.exit\n";
-        int option,val, count;
+        int option, val, count, l, r;
         cin >> option;
         Node<int> *res;
         switch (option)
@@ -416,6 +435,11 @@ int main()
             cin >> val;
             count = 0;
             tree->kthLargestElement(tree->root, count, val);
+            break;
+        case 9:
+            cout << "Enter [l,r]: ";
+            cin >> l >> r;
+            cout << tree->countInRange(tree->root, l, r)<<"\n";
             break;
         case 10:
             return 0;

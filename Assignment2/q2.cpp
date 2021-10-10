@@ -56,6 +56,7 @@ template <typename T1, typename T2>
 Node<T1, T2> *removeNode(Node<T1, T2> *ptr, T1 key)
 {
     Node<T1, T2> *node = search(ptr, key);
+    if(node == nullptr) return nullptr;
     if (node->next == nullptr)
     {
         if (node->prev)
@@ -97,24 +98,24 @@ public:
         for (int i = 0; i < 5; i++)
             hashtable[i] = nullptr;
     }
-    // int hash(T1 key)
-    // {
-    //     string str = to_string(key);
-    //     int p = 256;
-    //     int m = 1e9 + 9;
-    //     long long p_pow = 1;
-    //     long long hashVal = 0;
-    //     for (int i = 0; i < str.length(); i++)
-    //     {
-    //         hashVal = (hashVal + (str[i] * p_pow)) % m;
-    //         p_pow = p_pow % m;
-    //     }
-    //     return ((hashVal % m + m) % m) % 1031;
-    // }
-    int hash(int key)
+    int hash(T1 key)
     {
-        return key % 5;
+        string str = to_string(key);
+        int p = 256;
+        int m = 1e9 + 9;
+        long long p_pow = 1;
+        long long hashVal = 0;
+        for (int i = 0; i < str.length(); i++)
+        {
+            hashVal = (hashVal + (str[i] * p_pow)) % m;
+            p_pow = p_pow % m;
+        }
+        return ((hashVal % m + m) % m) % 5;
     }
+    // int hash(int key)
+    // {
+    //     return key % 5;
+    // }
     void insert(T1 key, T2 val)
     {
         int pos = hash(key);
@@ -132,7 +133,7 @@ public:
         if (node == nullptr)
         {
             // this->insert(key,0);
-            cout << "";
+            cout << "Not found\n";
         }
         else
         {

@@ -1,5 +1,6 @@
 #include <iostream>
-#include <cmath>
+#include <sstream>
+#include <string>
 using namespace std;
 
 template <typename T1, typename T2>
@@ -56,7 +57,8 @@ template <typename T1, typename T2>
 Node<T1, T2> *removeNode(Node<T1, T2> *ptr, T1 key)
 {
     Node<T1, T2> *node = search(ptr, key);
-    if(node == nullptr) return nullptr;
+    if (node == nullptr)
+        return nullptr;
     if (node->next == nullptr)
     {
         if (node->prev)
@@ -80,7 +82,7 @@ Node<T1, T2> *removeNode(Node<T1, T2> *ptr, T1 key)
             node->next->prev = nullptr;
         else
             return nullptr;
-        temp = node->next; 
+        temp = node->next;
         delete node;
         return temp;
     }
@@ -92,30 +94,31 @@ class unordered_map
 {
 
 public:
-    Node<T1, T2> *hashtable[5];
+    int tsize = 1031;
+    Node<T1, T2> *hashtable[1031];
+
     unordered_map()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < tsize; i++)
             hashtable[i] = nullptr;
     }
     int hash(T1 key)
     {
-        string str = to_string(key);
         int p = 256;
-        int m = 1e9 + 9;
-        long long p_pow = 1;
         long long hashVal = 0;
+        string str;
+        ostringstream st;
+        st << key;
+        str = st.str();
+        long long powOfP = 1;
+         int m = 1e9 + 9;
         for (int i = 0; i < str.length(); i++)
         {
-            hashVal = (hashVal + (str[i] * p_pow)) % m;
-            p_pow = p_pow % m;
+            hashVal = (hashVal + (str[i] * powOfP)) % m;
+            powOfP = (powOfP*p) % m;
         }
-        return ((hashVal % m + m) % m) % 5;
+        return ((hashVal % m + m) % m) % tsize;
     }
-    // int hash(int key)
-    // {
-    //     return key % 5;
-    // }
     void insert(T1 key, T2 val)
     {
         int pos = hash(key);
@@ -126,18 +129,18 @@ public:
         int pos = hash(key);
         hashtable[pos] = removeNode(hashtable[pos], key);
     }
-    void operator[](T1 key)
+    T2 operator[](T1 key)
     {
         int pos = hash(key);
         Node<T1, T2> *node = search(hashtable[pos], key);
         if (node == nullptr)
         {
             // this->insert(key,0);
-            cout << "Not found\n";
+            return -1;
         }
         else
         {
-            cout << node->val << "\n";
+            return node->val;
         }
     }
     bool find(T1 key)
@@ -156,40 +159,3 @@ public:
         }
     }
 };
-
-int main()
-{
-    unordered_map<int, int> m;
-    while (1)
-    {
-        cout << "1.Insert 2.Erase 3.Find 4.map[n] 5.exit\n";
-        int option, val, key, l, r;
-        cin >> option;
-        switch (option)
-        {
-        case 1:
-            cout << "Enter [key,value]: ";
-            cin >> key >> val;
-            m.insert(key, val);
-            break;
-        case 2:
-            cout << "Enter key: ";
-            cin >> val;
-            m.erase(val);
-            break;
-        case 3:
-            cout << "Enter key: ";
-            cin >> val;
-            cout<<m.find(val)<<"\n";
-            break;
-        case 4:
-            cout << "Enter key: ";
-            cin >> val;
-            m[val];
-            break;
-        case 5:
-            return 0;
-            break;
-        }
-    }
-}

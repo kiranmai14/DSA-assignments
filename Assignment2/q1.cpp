@@ -1,5 +1,16 @@
 #include <iostream>
 using namespace std;
+class student
+{
+public:
+    int age;
+    string name;
+    // student(int age, string name)
+    // {
+    //     this->age = age;
+    //     this->name = name;
+    // }
+};
 template <typename T>
 class Node
 {
@@ -18,19 +29,26 @@ public:
         this->count = 1;
     }
 };
-class student {
-    public:
-    int age;
-    string name;
+
+bool operator>=(student a, student b)
+{
+    return (a.age == b.age);
 }
-bool operator >= (student a,student b){
-    return(a.age == b.age);
+bool operator==(student a, student b)
+{
+    return (a.age == b.age);
 }
-bool operator == (student a,student b){
-    return(a.age >= b.age);
+bool operator<(student a, student b)
+{
+    return (a.age < b.age);
 }
-bool operator < (student a,student b){
-    return(a.age < b.age);
+bool operator<=(student a, student b)
+{
+    return (a.age <= b.age);
+}
+bool operator>(student a, student b)
+{
+    return (a.age > b.age);
 }
 template <class T>
 class AVLTree
@@ -275,13 +293,64 @@ public:
                 return left;
         }
     }
+    Node<T> *closestElement(Node<T> *node, T data)
+    {
+        if (!node)
+            return nullptr;
+        if (data == node->data)
+        {
+            return node;
+        }
+        if (data > node->data)
+        {
+            Node<T> *right = closestElement(node->right, data);
+            if (!right)
+                return node;
+            else
+            {
+                if (abs(data - node->data) <= abs(data - right->data))
+                    return node;
+                else
+                    return right;
+            }
+        }
+        else
+        {
+            Node<T> *left = closestElement(node->left, data);
+            if (!left)
+                return node;
+             else
+            {
+                if (abs(data - node->data) < abs(data - left->data))
+                    return node;
+                else
+                    return left;
+            }
+        }
+    }
 };
 int main()
 {
+    // AVLTree<student> *tree = new AVLTree<student>();
+    // student s1;
+    // s1.age = 24;
+    // s1.name="kiran";
+    // student s2;
+    // s2.age = 12;
+    // s2.name="krupa";
+    // cout<<"firstone\n";
+    // tree->root = tree->insert(tree->root, s1);
+    // cout<<"secondone\n";
+    // tree->root = tree->insert(tree->root, s2);
+    // student s3;
+    // s3.age = 9;
+    // s3.name="krupa2";
+    // tree->root = tree->insert(tree->root, s3);
+    // tree->root = tree->deleteNode(tree->root, s2);
     AVLTree<int> *tree = new AVLTree<int>();
     while (1)
     {
-        cout << "1.Insert 2.Delete 3.Search 4.Count 5.lower_bound 6.upper_bound 10.exit\n";
+        cout << "1.Insert 2.Delete 3.Search 4.Count 5.lower_bound 6.upper_bound 7.Closest element 10.exit\n";
         int option;
         cin >> option;
         int val;
@@ -329,9 +398,19 @@ int main()
             else
                 cout << "Cannot found\n";
             break;
+        case 7:
+            cout << "Enter value: ";
+            cin >> val;
+            res = tree->closestElement(tree->root, val);
+            if (res)
+                cout << res->data << "\n";
+            else
+                cout << "Cannot found\n";
+            break;
         case 10:
             return 0;
             break;
         }
     }
+    return 0;
 }

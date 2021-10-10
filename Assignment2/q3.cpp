@@ -1,163 +1,268 @@
 #include <iostream>
 #include <cstring>
 using namespace std;
+template <typename T>
 class Deque
 {
 public:
-    int *deque, f, r, size, capacity;
+    T *deque;
+    int front, rear, size, capacity;
     Deque()
     {
-        this->deque = new int[100];
-        f = r = -1;
+        this->deque = new T[100];
+        this->front = this->rear = -1;
         size = 0;
         capacity = 100;
     }
-    Deque(int capacity, int data)
+    Deque(int capacity, T data)
     {
-        this->deque = new int[capacity];
+        this->deque = new T[capacity];
         memset(this->deque, data, capacity);
-        this->f = this->r = -1;
+        this->front = this->rear = -1;
         this->size = 0;
         this->capacity = capacity;
     }
-    bool empty(){
-        if(f == -1 && r==-1)
+    bool empty()
+    {
+        if (this->front == -1 && this->rear == -1)
         {
-            cout<<"Deque is empty\n";
+            cout << "Deque is empty\n";
             return true;
         }
         return false;
     }
-    void push_front(int val)
+    void push_front(T val)
     {
-        if ((f == 0 && r == capacity - 1) || (f = r + 1))
+        if ((this->front == 0 && this->rear == capacity - 1) || (this->front == this->rear + 1))
         {
             cout << "Deque is full\n";
         }
-        else if (f == -1 && r == -1)
+        else if (this->front == -1 && this->rear == -1)
         {
-            f = r = 0;
-            deque[f] = val;
+            this->front = this->rear = 0;
+            deque[this->front] = val;
             size++;
         }
-        else if (f == 0)
+        else if (this->front == 0)
         {
-            f = capacity - 1;
-            deque[f] = val;
+            this->front = capacity - 1;
+            deque[this->front] = val;
             size++;
         }
         else
         {
-            f--;
-            deque[f] = val;
+            this->front--;
+            deque[this->front] = val;
             size++;
         }
-
     }
-    void push_back(int val)
+    void push_back(T val)
     {
-        if ((f == 0 && r == capacity - 1) || (f = r + 1))
+        if ((this->front == 0 && this->rear == capacity - 1) || (this->front == this->rear + 1))
         {
             cout << "Deque is full\n";
         }
-        else if (f == -1 && r == -1)
+        else if (this->front == -1 && this->rear == -1)
         {
-            f = r = 0;
-            deque[r] = val;
+            this->front = this->rear = 0;
+            deque[this->rear] = val;
             size++;
         }
-        else if (r == capacity - 1)
+        else if (this->rear == capacity - 1)
         {
-            r = 0;
-            deque[r] = val;
+            this->rear = 0;
+            deque[this->rear] = val;
             size++;
         }
         else
         {
-            r++;
-            deque[r] = val;
+            this->rear++;
+            deque[this->rear] = val;
             size++;
         }
     }
-    void pop_front(){
-        if(f == -1 && r==-1)
+    void pop_front()
+    {
+        if (this->front == -1 && this->rear == -1)
         {
-            cout<<"Deque is empty\n";
+            cout << "Deque is empty\n";
         }
-        else if(f==r){
-            f=r=-1;
-        }
-        else if(f == capacity-1){
-            cout<<"Deued"<<deque[f];
-            f=0;
+        else if (this->front == this->rear)
+        {
+            cout << "Dequed" << deque[this->rear] << "\n";
+            this->front = this->rear = -1;
             size--;
         }
-        else{
-            cout<<"Deued"<<deque[f];
-            f++;
+        else if (this->front == capacity - 1)
+        {
+            cout << "Dequed" << deque[this->front] << "\n";
+            this->front = 0;
+            size--;
+        }
+        else
+        {
+            cout << "Dequed" << deque[this->front] << "\n";
+            this->front++;
             size--;
         }
     }
-     void pop_back(){
-        if(f == -1 && r==-1)
+    void pop_back()
+    {
+        if (this->front == -1 && this->rear == -1)
         {
-            cout<<"Deque is empty\n";
+            cout << "Deque is empty\n";
         }
-        else if(f==r){
-            f=r=-1;
-        }
-        else if(r == 0){
-            cout<<"Deued"<<deque[r];
-            f=capacity-1;
+        else if (this->front == this->rear)
+        {
+            cout << "Dequed" << deque[this->rear] << "\n";
+            this->front = this->rear = -1;
             size--;
         }
-        else{
-            cout<<"Deued"<<deque[r];
-            r--;
+        else if (this->rear == 0)
+        {
+            cout << "Dequed" << deque[this->rear] << "\n";
+            this->rear = capacity - 1;
+            size--;
+        }
+        else
+        {
+            cout << "Dequed" << deque[this->rear] << "\n";
+            this->rear--;
             size--;
         }
     }
-    int front(){
-         if(f == -1 && r==-1)
+    int fron()
+    {
+        if (this->front == -1 && this->rear == -1)
         {
-            cout<<"Deque is empty\n";
+            cout << "Deque is empty\n";
             return -1;
         }
-        else{
-            return deque[f];
+        else
+        {
+            return deque[this->front];
         }
     }
-    int back(){
-         if(f == -1 && r==-1)
+    int back()
+    {
+        if (this->front == -1 && this->rear == -1)
         {
-            cout<<"Deque is empty\n";
+            cout << "Deque is empty\n";
             return -1;
         }
-        else{
-            return deque[r];
+        else
+        {
+            return deque[this->rear];
         }
     }
-    int size(){
+    int dequeSize()
+    {
         return size;
     }
-    void clear(){
+    void clear()
+    {
         deque = nullptr;
+        this->front = this->rear = -1;
     }
-    void resize(int newsize,int val){
-        int dummy[capacity];
-        for(int i=0;i<capacity;i++)
-            dummy[i] = deque[i];
-        deque = nullptr;
-        deque = new int[newsize];
-        memset(deque,val,newsize);
-        for(int i=0;i<capacity;i++)
-            deque[i] = dummy[i];
-        this->capacity = newsize; 
+    void resize(int newsize, int val)
+    {
+        // int dummy[capacity];
+        // for (int i = 0; i < capacity; i++)
+        //     dummy[i] = deque[i];
+        // deque = nullptr;
+        // deque = new int[newsize];
+        // memset(deque, val, newsize);
+        // for (int i = 0; i < capacity; i++)
+        //     deque[i] = dummy[i];
+        // this->capacity = newsize;
+        T *temp = new T[newsize];
+        memset(temp, val, newsize);
+        if(this->empty) deque = temp;
+        else if (newsize >= this->capacity)
+        {
+            
+            for (int i = 0; i <= rear; i++)
+                temp[i] = deque[i];
+            int l = newsize - 1;
+            for (int i = capacity - 1; i >= this->front; i--)
+                temp[l--] = deque[i];
+        }
     }
-    int operator [] (int n){
-        return deque[n];
+    int operator[](int n)
+    {
+        return deque[(this->front + n) % capacity];
+    }
+    void print()
+    {
+        for (int i = 0; i < capacity; i++)
+            cout << deque[i] << " ";
+        cout << endl;
     }
 };
 int main()
 {
+    Deque<int> d1(5, 0);
+    // int n, c;
+    // cin >> n >> c;
+    // Deque<int> d2(n, c);
+    while (1)
+    {
+        cout << "1.push_back 2.pop_back 3.push_front 4.pop_front 5.front 6.back\n7.empty 8.size 9.resize 10.clear 11.D[n] 12.exit\n";
+        int option, val, temp;
+        cin >> option;
+        switch (option)
+        {
+        case 1:
+            cout << "Enter value: ";
+            cin >> val;
+            d1.push_back(val);
+            d1.print();
+            break;
+        case 2:
+            d1.pop_back();
+            d1.print();
+            break;
+        case 3:
+            cout << "Enter value: ";
+            cin >> val;
+            d1.push_front(val);
+            d1.print();
+            break;
+        case 4:
+            d1.pop_front();
+            break;
+        case 5:
+            temp = d1.fron();
+            if (temp != -1)
+                cout << temp << "\n";
+            break;
+        case 6:
+            temp = d1.back();
+            if (temp != -1)
+                cout << temp << "\n";
+            break;
+        case 7:
+            cout << d1.empty() << "\n";
+            break;
+        case 8:
+            temp = d1.dequeSize();
+            cout << temp << "\n";
+            break;
+        case 9:
+            temp = d1.dequeSize();
+            cout << temp << "\n";
+            break;
+        case 10:
+            d1.clear();
+            break;
+        case 11:
+            cout << "Enter index: ";
+            cin >> val;
+            cout << d1[val] << "\n";
+            break;
+        case 12:
+            return 0;
+            break;
+        }
+    }
 }

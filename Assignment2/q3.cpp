@@ -8,10 +8,10 @@ public:
     int front, rear, size, capacity;
     Deque()
     {
-        this->deque = new T[10];
+        this->deque = new T[5];
         this->front = this->rear = -1;
         this->size = 0;
-        this->capacity = 10;
+        this->capacity = 5;
         for (int i = 0; i < capacity; i++)
             this->deque[i] = 0;
     }
@@ -251,7 +251,7 @@ public:
 };
 int main()
 {
-    Deque<int> d1(3,0);
+    Deque<int> d1;
     // int n, c;
     // cin >> n >> c;
     // Deque<int> d2(n, c);

@@ -22,7 +22,7 @@ template <typename T1, typename T2>
 Node<T1, T2> *search(Node<T1, T2> *ptr, T1 key)
 {
     Node<T1, T2> *temp = ptr;
-    while (ptr != nullptr)
+    while (temp != nullptr)
     {
         if (temp->key == key)
             return temp;
@@ -33,7 +33,7 @@ Node<T1, T2> *search(Node<T1, T2> *ptr, T1 key)
 template <typename T1, typename T2>
 Node<T1, T2> *insertNode(Node<T1, T2> *ptr, T1 key, T2 value)
 {
-    Node<T1, T2> *val = search(Node<T1, T2> * ptr, T1 key);
+    Node<T1, T2> *val = search(ptr, key);
     if (val != nullptr)
     {
         val->val = value;
@@ -55,7 +55,7 @@ Node<T1, T2> *insertNode(Node<T1, T2> *ptr, T1 key, T2 value)
 template <typename T1, typename T2>
 Node<T1, T2> *removeNode(Node<T1, T2> *ptr, T1 key)
 {
-    Node<T1, T2> *node = search(Node<T1, T2> * ptr, T1 key);
+    Node<T1, T2> *node = search(ptr, key);
     if (node->next == nullptr)
     {
         if (node->prev)
@@ -79,38 +79,41 @@ Node<T1, T2> *removeNode(Node<T1, T2> *ptr, T1 key)
             node->next->prev = nullptr;
         else
             return nullptr;
-        delete temp;
-        return node;
+        temp = node->next; 
+        delete node;
+        return temp;
     }
+    return nullptr;
 }
 
 template <class T1, class T2>
-class unoredered_map
+class unordered_map
 {
 
 public:
-    Node<T1, T2> *hashtable[1024];
-    unoredered_map()
+    Node<T1, T2> *hashtable[5];
+    unordered_map()
     {
-        memset(hashtable, nullptr, 1024);
+        for (int i = 0; i < 5; i++)
+            hashtable[i] = nullptr;
     }
+    // int hash(T1 key)
+    // {
+    //     string str = to_string(key);
+    //     int p = 256;
+    //     int m = 1e9 + 9;
+    //     long long p_pow = 1;
+    //     long long hashVal = 0;
+    //     for (int i = 0; i < str.length(); i++)
+    //     {
+    //         hashVal = (hashVal + (str[i] * p_pow)) % m;
+    //         p_pow = p_pow % m;
+    //     }
+    //     return ((hashVal % m + m) % m) % 1031;
+    // }
     int hash(int key)
     {
-        return key % 1031;
-    }
-    int hash(T1 key)
-    {
-        string str = to_string(key);
-        it p = 256;
-        int m = 1e9 + 9;
-        long long p_pow = 1;
-        long long hashVal = 0;
-        for (int i = 0; i < str.length(); i++)
-        {
-            hashVal = (hashVal+(str[i]*p_pow)%m;
-            p_pow = p_pow%m;
-        }
-        return ((hashVal % m + m) % m) % 1031;
+        return key % 5;
     }
     void insert(T1 key, T2 val)
     {
@@ -125,10 +128,11 @@ public:
     void operator[](T1 key)
     {
         int pos = hash(key);
-        Node<T1, T2> *node = search(hashtable[pos], T1 key);
+        Node<T1, T2> *node = search(hashtable[pos], key);
         if (node == nullptr)
         {
-            cout << "Not found\n";
+            // this->insert(key,0);
+            cout << "";
         }
         else
         {
@@ -140,7 +144,7 @@ public:
         int pos = hash(key);
         if (pos > 1024)
             return false;
-        Node<T1, T2> *node = search(hashtable[pos], T1 key);
+        Node<T1, T2> *node = search(hashtable[pos], key);
         if (node == nullptr)
         {
             return false;
@@ -154,14 +158,37 @@ public:
 
 int main()
 {
-    // unordered_map<int,int> m;
-    // m.insert({1,10});
-    double f = 123.45;
-    double f3;
-    double f2 = std::modf(f, &f3);
-    std::cout << "modf() makes " << f3 << " + " << f2 << '\n';
-    uint64_t T[8][256];
-    for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 256; j++)
-            T[i][j] = getRandomUInt64();
+    unordered_map<int, int> m;
+    while (1)
+    {
+        cout << "1.Insert 2.Erase 3.Find 4.map[n] 5.exit\n";
+        int option, val, key, l, r;
+        cin >> option;
+        switch (option)
+        {
+        case 1:
+            cout << "Enter [key,value]: ";
+            cin >> key >> val;
+            m.insert(key, val);
+            break;
+        case 2:
+            cout << "Enter key: ";
+            cin >> val;
+            m.erase(val);
+            break;
+        case 3:
+            cout << "Enter key: ";
+            cin >> val;
+            cout<<m.find(val)<<"\n";
+            break;
+        case 4:
+            cout << "Enter key: ";
+            cin >> val;
+            m[val];
+            break;
+        case 5:
+            return 0;
+            break;
+        }
+    }
 }

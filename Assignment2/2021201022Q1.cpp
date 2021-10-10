@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 class student
 {
@@ -372,12 +373,16 @@ int main()
     // tree->root = tree->insert(tree->root, s3);
     // tree->root = tree->deleteNode(tree->root, s2);
     AVLTree<int> *tree = new AVLTree<int>();
+    // AVLTree<string> *tree = new AVLTree<string>();
     while (1)
     {
         cout << "1.Insert 2.Delete 3.Search 4.Count 5.lower_bound 6.upper_bound\n7.Closest element 8.KthLargest Element 9.count elements in range 10.exit\n";
-        int option, val, count, l, r;
+        int option, count, k;
         cin >> option;
         Node<int> *res;
+        // Node<string> *res;
+        int val,l, r;
+        // string val,l, r;
         switch (option)
         {
         case 1:
@@ -424,7 +429,7 @@ int main()
         case 7:
             cout << "Enter value: ";
             cin >> val;
-            res = tree->closestElement(tree->root, val);
+            // res = tree->closestElement(tree->root, val);
             if (res)
                 cout << res->data << "\n";
             else
@@ -432,9 +437,9 @@ int main()
             break;
         case 8:
             cout << "Enter k: ";
-            cin >> val;
+            cin >> k;
             count = 0;
-            tree->kthLargestElement(tree->root, count, val);
+            tree->kthLargestElement(tree->root, count, k);
             break;
         case 9:
             cout << "Enter [l,r]: ";

@@ -8,10 +8,12 @@ public:
     int front, rear, size, capacity;
     Deque()
     {
-        this->deque = new T[100];
+        this->deque = new T[10];
         this->front = this->rear = -1;
         this->size = 0;
-        capacity = 100;
+        this->capacity = 10;
+        for (int i = 0; i < capacity; i++)
+            this->deque[i] = 0;
     }
     Deque(int capacity, T data)
     {
@@ -35,7 +37,8 @@ public:
     {
         if ((this->front == -1 && this->rear == capacity - 1) || (this->front == this->rear + 1))
         {
-            cout << "Deque is full\n";
+            // cout << "Deque is full\n";
+            this->resize(this->capacity*2,0);
         }
         else if (this->front == -1)
         {
@@ -60,7 +63,8 @@ public:
     {
         if ((this->front == -1 && this->rear == capacity - 1) || (this->front == this->rear + 1))
         {
-            cout << "Deque is full\n";
+            // cout << "Deque is full\n";
+            this->resize(this->capacity*2,0);
         }
         else if (this->rear == -1)
         {
@@ -247,7 +251,7 @@ public:
 };
 int main()
 {
-    Deque<int> d1(5, 0);
+    Deque<int> d1(3,0);
     // int n, c;
     // cin >> n >> c;
     // Deque<int> d2(n, c);

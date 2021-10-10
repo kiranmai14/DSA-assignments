@@ -167,37 +167,30 @@ public:
         }
         else
         {
-            if (node->count > 1)
+            if (!node->left && !node->right)
             {
-                node->count--;
+                delete node;
+                return nullptr;
+            }
+            if (!node->left)
+            {
+                Node<T> *temp = node->right;
+                delete node;
+                return temp;
+            }
+            else if (!node->right)
+            {
+                Node<T> *temp = node->left;
+                delete node;
+                return temp;
             }
             else
             {
-                if (!node->left && !node->right)
-                {
-                    delete node;
-                    return nullptr;
-                }
-                if (!node->left)
-                {
-                    Node<T> *temp = node->right;
-                    delete node;
-                    return temp;
-                }
-                else if (!node->right)
-                {
-                    Node<T> *temp = node->left;
-                    delete node;
-                    return temp;
-                }
-                else
-                {
-                    Node<T> *minValptr = minVal(node->right);
-                    node->data = minValptr->data;
-                    node->count = minValptr->count;
-                    minValptr->count = 1;
-                    node->right = deleteNode(node->right, minValptr->data);
-                }
+                Node<T> *minValptr = minVal(node->right);
+                node->data = minValptr->data;
+                node->count = minValptr->count;
+                // minValptr->count = 1;
+                node->right = deleteNode(node->right, minValptr->data);
             }
         }
         calculateHeight(node);
@@ -319,7 +312,7 @@ public:
             Node<T> *left = closestElement(node->left, data);
             if (!left)
                 return node;
-             else
+            else
             {
                 if (abs(data - node->data) < abs(data - left->data))
                     return node;
@@ -327,6 +320,18 @@ public:
                     return left;
             }
         }
+    }
+    void kthLargestElement(Node<T> *node, int &count, int k)
+    {
+        if (!node || count >= k)
+            return;
+        kthLargestElement(node->right, count, k);
+        count++;
+        if (count == k)
+        {
+            cout << node->data << "\n";
+        }
+        kthLargestElement(node->left, count, k);
     }
 };
 int main()
@@ -350,10 +355,9 @@ int main()
     AVLTree<int> *tree = new AVLTree<int>();
     while (1)
     {
-        cout << "1.Insert 2.Delete 3.Search 4.Count 5.lower_bound 6.upper_bound 7.Closest element 10.exit\n";
-        int option;
+        cout << "1.Insert 2.Delete 3.Search 4.Count 5.lower_bound 6.upper_bound\n7.Closest element 8.KthLargest Element 9.count elements in range 10.exit\n";
+        int option,val, count;
         cin >> option;
-        int val;
         Node<int> *res;
         switch (option)
         {
@@ -406,6 +410,12 @@ int main()
                 cout << res->data << "\n";
             else
                 cout << "Cannot found\n";
+            break;
+        case 8:
+            cout << "Enter k: ";
+            cin >> val;
+            count = 0;
+            tree->kthLargestElement(tree->root, count, val);
             break;
         case 10:
             return 0;

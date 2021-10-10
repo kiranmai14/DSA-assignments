@@ -162,14 +162,13 @@ public:
 
 int main()
 {
-    // unordered_map<int, int> m;
-    unordered_map<string, int> m;
+    unordered_map<int, int> m;
     while (1)
     {
         cout << "1.Insert 2.Erase 3.Find 4.map[n] 5.exit\n";
         int option, val, l, r;
-        // int key;
-        string key;
+        int key;
+        // string key;
         cin >> option;
         switch (option)
         {

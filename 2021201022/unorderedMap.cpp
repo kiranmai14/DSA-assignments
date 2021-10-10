@@ -111,11 +111,11 @@ public:
         st << key;
         str = st.str();
         long long powOfP = 1;
-        int m = 1e9 + 9;
+         int m = 1e9 + 9;
         for (int i = 0; i < str.length(); i++)
         {
             hashVal = (hashVal + (str[i] * powOfP)) % m;
-            powOfP = (powOfP * p) % m;
+            powOfP = (powOfP*p) % m;
         }
         return ((hashVal % m + m) % m) % tsize;
     }
@@ -159,43 +159,3 @@ public:
         }
     }
 };
-
-int main()
-{
-    // unordered_map<int, int> m;
-    unordered_map<string, int> m;
-    while (1)
-    {
-        cout << "1.Insert 2.Erase 3.Find 4.map[n] 5.exit\n";
-        int option, val, l, r;
-        // int key;
-        string key;
-        cin >> option;
-        switch (option)
-        {
-        case 1:
-            cout << "Enter [key,value]: ";
-            cin >> key >> val;
-            m.insert(key, val);
-            break;
-        case 2:
-            cout << "Enter key: ";
-            cin >> key;
-            m.erase(key);
-            break;
-        case 3:
-            cout << "Enter key: ";
-            cin >> key;
-            cout << m.find(key) << "\n";
-            break;
-        case 4:
-            cout << "Enter key: ";
-            cin >> key;
-            cout << m[key] << "\n";
-            break;
-        case 5:
-            return 0;
-            break;
-        }
-    }
-}

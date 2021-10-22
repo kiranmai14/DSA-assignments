@@ -2,18 +2,54 @@
 using namespace std;
 #define MAX_ROW 10
 #define MAX_COL 10
-int r, c;
+int r, c , len_st;
 char mat[MAX_COL][MAX_COL];
-bool checkborders(int i, int j, char ch)
+class TrieNode
 {
-    return (i >= 0 && i < r && j >= 0 && j < c && mat[i][j] == ch);
+public:
+    TrieNode *child[26];
+    bool isEnd;
+    string word;
+    TrieNode(string word)
+    {
+        isEnd = false;
+        this->word = word;
+        for (int i = 0; i < 26; i++)
+            child[i] = nullptr;
+    }
+};
+void insert(string str, TrieNode *root)
+{
+    TrieNode *temp = root;
+    for (int i = 0; i < str.size(); i++)
+    {
+        int index = str[i] - 'a';
+        if (temp->child[index] == nullptr)
+            temp->child[index] = new TrieNode(str);
+        temp = temp->child[index];
+    }
+    temp->isEnd = true;
 }
-bool fun(bool visited[MAX_ROW][MAX_COL], int i, int j, string que, int k)
+void buildTrie(string l[], int len, TrieNode *root)
 {
-     if (k == que.size())
-        return true;
-    if(visited[i][j] == true)
-        return false;
+    for (int i = 0; i < len; i++)
+    {
+        insert(l[i], root);
+    }
+}
+bool checkborders(int i, int j)
+{
+    return (i >= 0 && i < r && j >= 0 && j < c);
+}
+void fun(bool visited[MAX_ROW][MAX_COL], int i, int j, TrieNode *que,string ans[])
+{
+    if (visited[i][j] == true)
+        return;
+    if(que->isEnd)
+    {
+        ans[len_st] = que->word;
+        len_st++;
+    }
     visited[i][j] = true;
     static int x[4] = {1, -1, 0, 0};
     static int y[4] = {0, 0, 1, -1};
@@ -21,25 +57,36 @@ bool fun(bool visited[MAX_ROW][MAX_COL], int i, int j, string que, int k)
     {
         int X = i + x[l];
         int Y = j + y[l];
-        if (checkborders(X, Y, que[k]))
-            return fun(visited, X, Y, que, k + 1);
+        if (checkborders(X, Y))
+        {
+            int index = mat[X][Y] - 'a';
+            if (que->child[index] != nullptr && mat[X][Y] - 'a' == (char)index)
+            {
+                fun(visited, X, Y, que->child[index],ans);
+            }
+        }
     }
-    return false;
+    visited[i][j] = false;
 }
-bool check(string que)
+void check(TrieNode *root,string ans[])
 {
     bool visited[MAX_ROW][MAX_COL] = {false};
-    int k = 0;
+    bool traversed[26] = {false};
+    int last_len;
     for (int i = 0; i < r; i++)
     {
         for (int j = 0; j < c; j++)
         {
-            if (mat[i][j] == que[0])
-                if (fun(visited, i, j, que, k+1))
-                    return true;
+            int index = mat[i][j] - 'a';
+            if (root->child[index] != nullptr && !traversed[index])
+            {
+                last_len = len_st;
+                fun(visited, i, j, root->child[index],ans);
+                if(last_len < len_st)
+                    traversed[index] = true;
+            }
         }
     }
-    return false;
 }
 int main()
 {
@@ -52,15 +99,19 @@ int main()
     }
     cin >> l;
     bool res[l] = {false};
-    string list[l];
-    for (int i = 0; i < l; i++)
-        cin >> list[i];
-    // cout<<check(list[0]);
+    string list[l], answer[l];
     for (int i = 0; i < l; i++)
     {
-        if (check(list[i]))
-            cout<<true<<endl;
-        else
-            cout<<false<<endl;
+        cin >> list[i];
+        answer[i] = "";
+    }
+    TrieNode *root = new TrieNode("$");
+    buildTrie(list, l, root);
+    check(root,answer);
+    for (string st:answer)
+    {
+        if(st == "")
+            break;
+        cout<<st<<endl;
     }
 }

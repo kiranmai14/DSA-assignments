@@ -21,11 +21,13 @@ public:
 void insert(string str, TrieNode *root)
 {
     TrieNode *temp = root;
+    string t="";
     for (int i = 0; i < str.size(); i++)
     {
         int index = str[i] - 'a';
+        t = t+str[i];
         if (temp->child[index] == nullptr)
-            temp->child[index] = new TrieNode(str);
+            temp->child[index] = new TrieNode(t);
         temp = temp->child[index];
     }
     temp->isEnd = true;
@@ -72,7 +74,6 @@ void check(TrieNode *root, string ans[])
 {
     bool visited[MAX_ROW][MAX_COL] = {false};
     bool traversed[26] = {false};
-    int last_len;
     for (int i = 0; i < r; i++)
     {
         for (int j = 0; j < c; j++)
@@ -80,20 +81,17 @@ void check(TrieNode *root, string ans[])
             int index = mat[i][j] - 'a';
             if (root->child[index] != nullptr && !traversed[index])
             {
-                last_len = len_st;
                 fun(visited, i, j, root->child[index], ans);
-                if (last_len < len_st)
-                    traversed[index] = true;
             }
         }
     }
 }
-void sort(string ans[], int len)
+void sort(string ans[])
 {
 
-    for (int i = 0; i < len; ++i)
+    for (int i = 0; i < len_st; ++i)
     {
-        for (int j = i + 1; j < len; ++j)
+        for (int j = i + 1; j < len_st; ++j)
         {
             if (ans[i] > ans[j])
             {
@@ -116,20 +114,22 @@ int main()
     }
     cin >> l;
     bool res[l] = {false};
-    string list[l], answer[l];
+    string list[l], answer[100];
     for (int i = 0; i < l; i++)
-    {
         cin >> list[i];
+    for(int i=0;i<100;i++)
         answer[i] = "";
-    }
     TrieNode *root = new TrieNode("$");
     buildTrie(list, l, root);
     check(root, answer);
-    sort(answer, l);
-    for (string st : answer)
+    sort(answer);
+    if(answer[0] == "")
+        return 0;
+    cout << answer[0] << " ";
+    for (int i = 1; i < len_st; ++i)
     {
-        if (st == "")
+        if(answer[i] == answer[i-1])
             continue;
-        cout << st << endl;
+        cout << answer[i] << " ";
     }
 }

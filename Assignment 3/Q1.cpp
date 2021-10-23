@@ -94,16 +94,16 @@ void findDist(string key, vector<vector<int>> &mat, char c)
     row.push_back(mat.size());
     for (int j = 1; j <= key.size(); j++)
         row.push_back(0);
-    mat.push_back(row);
     int cost = 0, val = 0;
     int i = mat.size();
+    mat.push_back(row);
     for (int j = 1; j <= key.size(); j++)
     {
-        if (key[j] == c)
+        if (key[j - 1] == c)
             cost = 0;
         else
             cost = 1;
-        val = min(mat[i - 1][j], mat[i][j - 1]);
+        val = min(mat[i - 1][j] + 1, mat[i][j - 1] + 1);
         val = min(val, mat[i - 1][j - 1] + cost);
         mat[i][j] = val;
         val = 0;
@@ -111,13 +111,6 @@ void findDist(string key, vector<vector<int>> &mat, char c)
 }
 void autoCorrect(string key, TrieNode *root, vector<string> &res, vector<vector<int>> &mat)
 {
-    TrieNode *temp = root;
-    vector<int> row;
-    for (int i = 0; i <= key.size(); i++)
-    {
-        row.push_back(i);
-    }
-    mat.push_back(row);
     for (int i = 0; i < 26; i++)
     {
         if (root->child[i] == nullptr)
@@ -163,6 +156,12 @@ int main()
     }
     else if (a == 3)
     {
+        vector<int> row;
+        for (int i = 0; i <= test.size(); i++)
+        {
+            row.push_back(i);
+        }
+        mat.push_back(row);
         autoCorrect(test, root, res3, mat);
         cout << res3.size() << endl;
         for (string temp : res3)

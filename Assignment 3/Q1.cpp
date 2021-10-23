@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 class TrieNode
 {
@@ -48,39 +49,125 @@ bool spellCheck(string key, TrieNode *root)
     }
     return temp->isEnd;
 }
-// vector<string> autoComplete(string key, TrieNode *root)
-// {
-//     vector<string> res;
-//     TrieNode *temp = root;
-//     int index;
-//     for (int i = 0; i < key.size(); i++)
-//     {
-//         index = key[i] - 'a';
-//         if (temp->child[index] == nullptr)
-//         {
-//             break;
-//         }
-//         if(temp->isEnd)
-//         {
-//             res.push_back(temp->word);
-//         }
-//         temp = temp->child[index];
-//     }
-//     while()
-//     return res;
-// }
+void fetch(TrieNode *root, vector<string> &res)
+{
+    for (int i = 0; i < 26; i++)
+    {
+        if (root->child[i] == nullptr)
+        {
+            continue;
+        }
+        if (root->child[i]->isEnd)
+        {
+            res.push_back(root->child[i]->word);
+        }
+        fetch(root->child[i], res);
+    }
+}
+vector<string> autoComplete(string key, TrieNode *root)
+{
+    vector<string> res;
+    TrieNode *temp = root;
+    int index;
+    bool flag = 0;
+    for (int i = 0; i < key.size(); i++)
+    {
+        index = key[i] - 'a';
+        if (temp->child[index] == nullptr)
+        {
+            flag = 1;
+            break;
+        }
+        temp = temp->child[index];
+    }
+    if (temp->isEnd)
+    {
+        res.push_back(temp->word);
+    }
+    if (!flag)
+        fetch(temp, res);
+    return res;
+}
+void findDist(string key, vector<vector<int>> &mat, char c)
+{
+    vector<int> row;
+    row.push_back(mat.size());
+    for (int j = 1; j <= key.size(); j++)
+        row.push_back(0);
+    mat.push_back(row);
+    int cost = 0, val = 0;
+    int i = mat.size();
+    for (int j = 1; j <= key.size(); j++)
+    {
+        if (key[j] == c)
+            cost = 0;
+        else
+            cost = 1;
+        val = min(mat[i - 1][j], mat[i][j - 1]);
+        val = min(val, mat[i - 1][j - 1] + cost);
+        mat[i][j] = val;
+        val = 0;
+    }
+}
+void autoCorrect(string key, TrieNode *root, vector<string> &res, vector<vector<int>> &mat)
+{
+    TrieNode *temp = root;
+    vector<int> row;
+    for (int i = 0; i <= key.size(); i++)
+    {
+        row.push_back(i);
+    }
+    mat.push_back(row);
+    for (int i = 0; i < 26; i++)
+    {
+        if (root->child[i] == nullptr)
+        {
+            continue;
+        }
+        char a = i + 'a';
+        findDist(key, mat, a);
+        int k = mat.size() - 1;
+        int l = key.size();
+        if (mat[k][l] <= 3 && root->child[i]->isEnd)
+        {
+            res.push_back(root->child[i]->word);
+        }
+        autoCorrect(key, root->child[i], res, mat);
+        mat.pop_back();
+    }
+}
 int main()
 {
     TrieNode *root = new TrieNode("$");
     int n, a;
     cin >> n;
     string dict[n], test;
+    vector<string> res2, res3;
     for (int i = 0; i < n; i++)
         cin >> dict[i];
     buildTrie(dict, n, root);
     cin >> a >> test;
+    vector<vector<int>> mat;
     if (a == 1)
     {
         cout << spellCheck(test, root);
+    }
+    else if (a == 2)
+    {
+        res2 = autoComplete(test, root);
+        cout << res2.size() << endl;
+        for (string temp : res2)
+        {
+            cout << temp << endl;
+        }
+    }
+    else if (a == 3)
+    {
+        autoCorrect(test, root, res3, mat);
+        cout << res3.size() << endl;
+        for (string temp : res3)
+        {
+            cout << temp << endl;
+        }
     }
 }

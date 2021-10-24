@@ -2,46 +2,21 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-// vector<vector<int>> backTrack(vector<vector<int>> parent, int d, int n)
-// {
-//     vector<vector<int>> res(n);
-//     for (int i = 0; i < n; i++)
-//     {
-//         sort(parent[i].begin(), parent[i].end());
-//     }
-//     for (int i = 0; i < n; i++)
-//     {
-//         if (parent[i][0] == -1)
-//             continue;
-//         for (int p : parent[i])
-//         {
-//             int j = p;
-//             res[i].push_back(i);
-//             while (j != -1)
-//             {
-//                 res[i].push_back(j);
-//                 j = parent[j][0];
-//             }
-//         }
 
-//         // reverse(res[i].begin(), res[i].end());
-//     }
-//     return res;
-// }
-vector<vector<string>> dijksta(vector<vector<pair<int, int>>> g, int d)
+vector<string> dijksta(vector<vector<pair<int, int>>> g, int d)
 {
     int n = g.size();
     bool visited[n] = {false};
     visited[d] = true;
     vector<int> weight(n, INT32_MAX);
     weight[d] = 0;
-    vector<vector<string>> path(n);
-    path[d].push_back(to_string(d));
+    vector<string> path(n,"");
+    path[d] = to_string(d);
     for (auto adj : g[d])
     {
         weight[adj.first] = adj.second;
         string x = to_string(adj.first) + " " + to_string(d);
-        path[adj.first].push_back(x);
+        path[adj.first] = x;
     }
     for (int i = 0; i < n - 1; i++)
     {
@@ -64,18 +39,23 @@ vector<vector<string>> dijksta(vector<vector<pair<int, int>>> g, int d)
             if (!visited[v] && weight[v] >= weight[node] + w)
             {
                 weight[v] = weight[node] + w;
-                for (auto x : path[node])
-                {
-                    string y = to_string(v) + " " + x;
-                    path[v].push_back(y);
-                }
+                string y = to_string(v) + " " + path[node];
+                if(path[v] == "" || path[v] > y)
+                     path[v] = y;
+                // if (x > y)
+                //     path[v] = y;
+                // for (auto x : path[node])
+                // {
+                //     string y = to_string(v) + " " + x;
+                //     path[v].push_back(y);
+                // }
             }
         }
     }
-    for (int i = 0; i < n; i++)
-    {
-        sort(path[i].begin(), path[i].end());
-    }
+    // for (int i = 0; i < n; i++)
+    // {
+    //     sort(path[i].begin(), path[i].end());
+    // }
     return path;
 }
 int main()
@@ -96,7 +76,7 @@ int main()
     // }
     int dest;
     cin >> dest;
-    vector<vector<string>> res1(n);
+    vector<string> res1(n);
     res1 = dijksta(g, dest);
     for (int i = 0; i < n; i++)
     {
@@ -106,6 +86,6 @@ int main()
         // {
         //     cout << res1[i][0][j] << " ";
         // }
-        cout << res1[i][0]<<endl;
+        cout << res1[i] << endl;
     }
 }

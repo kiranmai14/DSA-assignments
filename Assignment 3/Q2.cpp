@@ -40,7 +40,7 @@ vector<vector<string>> dijksta(vector<vector<pair<int, int>>> g, int d)
     for (auto adj : g[d])
     {
         weight[adj.first] = adj.second;
-        string x = to_string(adj.first) + to_string(d);
+        string x = to_string(adj.first) + " " + to_string(d);
         path[adj.first].push_back(x);
     }
     for (int i = 0; i < n - 1; i++)
@@ -66,7 +66,7 @@ vector<vector<string>> dijksta(vector<vector<pair<int, int>>> g, int d)
                 weight[v] = weight[node] + w;
                 for (auto x : path[node])
                 {
-                    string y = to_string(v) + x;
+                    string y = to_string(v) + " " + x;
                     path[v].push_back(y);
                 }
             }
@@ -90,10 +90,10 @@ int main()
         g[s].push_back({d, w});
         g[d].push_back({s, w});
     }
-    for (int i = 0; i < n; i++)
-    {
-        sort(g[i].begin(), g[i].end());
-    }
+    // for (int i = 0; i < n; i++)
+    // {
+    //     sort(g[i].begin(), g[i].end());
+    // }
     int dest;
     cin >> dest;
     vector<vector<string>> res1(n);
@@ -102,10 +102,10 @@ int main()
     {
         if (i == dest)
             continue;
-        for (int j = 0; j < res1[i][0].size(); j++)
-        {
-            cout << res1[i][0][j] << " ";
-        }
-        cout << endl;
+        // for (int j = 0; j < res1[i][0].size(); j++)
+        // {
+        //     cout << res1[i][0][j] << " ";
+        // }
+        cout << res1[i][0]<<endl;
     }
 }

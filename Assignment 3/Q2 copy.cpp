@@ -12,9 +12,10 @@ void dfs(vector<vector<pair<int, int>>> g, int i, vector<vector<string>> &path, 
         if (!visited[adj.first])
         {
             weight = weight + adj.second;
-            d = d + to_string(adj.first);
+            d = d + " "+to_string(adj.first);
             path[weight].push_back(d);
             dfs(g, adj.first, path, visited, d, weight);
+            d.pop_back();
             d.pop_back();
             weight = weight - adj.second;
         }
@@ -24,9 +25,8 @@ void dfs(vector<vector<pair<int, int>>> g, int i, vector<vector<string>> &path, 
 void printPaths(vector<vector<pair<int, int>>> g, int k)
 {
     int n = g.size();
-    int lastVisited = -1;
     vector<bool> visited(n, false);
-    vector<vector<string>> w(10);
+    vector<vector<string>> w(110);
     string d = "";
     int weight = 0;
     for (int i = 0; i < n; i++)
@@ -34,22 +34,12 @@ void printPaths(vector<vector<pair<int, int>>> g, int k)
         d = to_string(i);
         weight = 0;
         dfs(g, i, w, visited, d, weight);
-        // visited[i] = false;
     }
     for (int i = 0; i < 10; i++)
     {
         sort(w[i].begin(), w[i].end());
     }
-    // for (int i = 0; i < 10; i++)
-    // {
-    //     cout << "weight: " << i << " ";
-    //     for (auto x : w[i])
-    //     {
-    //         cout << x << " ";
-    //     }
-    //     cout << endl;
-    // }
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 110; i++)
     {
         int s = w[i].size();
         for (int j = 0; j < s; j++)
@@ -68,16 +58,16 @@ void printPaths(vector<vector<pair<int, int>>> g, int k)
             }
         }
     }
-    for (int i = 0; i < 10; i++)
-    {
-        cout << "weight: " << i << " ";
-        for (auto x : w[i])
-        {
-            cout << x << " ";
-        }
-        cout << endl;
-    }
-    for (int i = 0; i < 10; i++)
+    // for (int i = 0; i < 10; i++)
+    // {
+    //     cout << "weight: " << i << " ";
+    //     for (auto x : w[i])
+    //     {
+    //         cout << x << " ";
+    //     }
+    //     cout << endl;
+    // }
+    for (int i = 0; i < 110; i++)
     {
         if (k == 0)
             break;
@@ -87,14 +77,10 @@ void printPaths(vector<vector<pair<int, int>>> g, int k)
                 break;
             if (k && x.size() > 0)
             {
-                for (int j = 0; j < x.size(); j++)
-                {
-                    cout << x[j] << " ";
-                }
+                cout << x;
                 k--;
                 cout << endl;
             }
-            
         }
     }
 }

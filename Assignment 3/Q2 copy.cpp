@@ -35,7 +35,7 @@ void printPaths(vector<vector<pair<int, int>>> g, int k)
         weight = 0;
         dfs(g, i, w, visited, d, weight);
     }
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 110; i++)
     {
         sort(w[i].begin(), w[i].end());
     }

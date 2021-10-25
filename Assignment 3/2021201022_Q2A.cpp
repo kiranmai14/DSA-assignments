@@ -8,7 +8,7 @@ vector<string> dijksta(vector<vector<pair<int, int>>> g, int d)
     int n = g.size();
     bool visited[n] = {false};
     visited[d] = true;
-    vector<int> weight(n, INT32_MAX);
+    vector<long long> weight(n, INT64_MAX);
     weight[d] = 0;
     vector<string> path(n,"");
     path[d] = to_string(d);
@@ -21,7 +21,7 @@ vector<string> dijksta(vector<vector<pair<int, int>>> g, int d)
     for (int i = 0; i < n - 1; i++)
     {
         // select min from remaining edges weights
-        int min_weight = INT32_MAX, node;
+        long long min_weight = INT64_MAX, node;
         for (int j = 0; j < n; j++)
         {
             if (!visited[j] && weight[j] <= min_weight)
@@ -42,20 +42,9 @@ vector<string> dijksta(vector<vector<pair<int, int>>> g, int d)
                 string y = to_string(v) + " " + path[node];
                 if(path[v] == "" || path[v] > y)
                      path[v] = y;
-                // if (x > y)
-                //     path[v] = y;
-                // for (auto x : path[node])
-                // {
-                //     string y = to_string(v) + " " + x;
-                //     path[v].push_back(y);
-                // }
             }
         }
     }
-    // for (int i = 0; i < n; i++)
-    // {
-    //     sort(path[i].begin(), path[i].end());
-    // }
     return path;
 }
 int main()
@@ -70,10 +59,6 @@ int main()
         g[s].push_back({d, w});
         g[d].push_back({s, w});
     }
-    // for (int i = 0; i < n; i++)
-    // {
-    //     sort(g[i].begin(), g[i].end());
-    // }
     int dest;
     cin >> dest;
     vector<string> res1(n);
@@ -82,10 +67,6 @@ int main()
     {
         if (i == dest)
             continue;
-        // for (int j = 0; j < res1[i][0].size(); j++)
-        // {
-        //     cout << res1[i][0][j] << " ";
-        // }
         cout << res1[i] << endl;
     }
 }

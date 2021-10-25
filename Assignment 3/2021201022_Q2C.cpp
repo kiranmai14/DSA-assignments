@@ -74,7 +74,7 @@ int main()
     bool flag = 0;
     if (a == 0)
     {
-        cout << "NO";
+        cout << "No";
         return 0;
     }
     for (int i = 0; i < rider_pos.size(); i++)
@@ -90,18 +90,10 @@ int main()
         }
     }
     if (!flag)
-        cout << "YES" << endl
+        cout << "Yes" << endl
              << a;
     else
-        cout << "NO";
+        cout << "No";
     cout << endl;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            cout << grid[i][j] << " ";
-        }
-        cout << endl;
-    }
     return 0;
 }

@@ -58,15 +58,6 @@ void printPaths(vector<vector<pair<int, int>>> g, int k)
             }
         }
     }
-    // for (int i = 0; i < 10; i++)
-    // {
-    //     cout << "weight: " << i << " ";
-    //     for (auto x : w[i])
-    //     {
-    //         cout << x << " ";
-    //     }
-    //     cout << endl;
-    // }
     for (int i = 0; i < 110; i++)
     {
         if (k == 0)

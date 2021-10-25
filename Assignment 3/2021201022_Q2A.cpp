@@ -10,7 +10,7 @@ vector<string> dijksta(vector<vector<pair<int, int>>> g, int d)
     visited[d] = true;
     vector<long long> weight(n, INT64_MAX);
     weight[d] = 0;
-    vector<string> path(n,"");
+    vector<string> path(n, "");
     path[d] = to_string(d);
     for (auto adj : g[d])
     {
@@ -36,12 +36,18 @@ vector<string> dijksta(vector<vector<pair<int, int>>> g, int d)
         {
             int v = adj.first;
             int w = adj.second;
-            if (!visited[v] && weight[v] >= weight[node] + w)
+            if (!visited[v] && weight[v] > weight[node] + w)
             {
                 weight[v] = weight[node] + w;
                 string y = to_string(v) + " " + path[node];
-                if(path[v] == "" || path[v] > y)
-                     path[v] = y;
+                path[v] = y;
+            }
+            else if (!visited[v] && weight[v] == weight[node] + w)
+            {
+                weight[v] = weight[node] + w;
+                string y = to_string(v) + " " + path[node];
+                if (path[v] > y)
+                    path[v] = y;
             }
         }
     }

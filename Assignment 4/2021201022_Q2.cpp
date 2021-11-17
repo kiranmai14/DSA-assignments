@@ -1,22 +1,25 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
-#include <ctime>
 #include <vector>
 #include <string>
 #include <sstream>
-#include <math.h>
 #include <algorithm>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <filesystem>
+#include <ctime>
+#include <unistd.h>
+
 using namespace std;
 
-#define FILE_SIZE 65536
-#define K_FILES 8192
-
-#define INP_FILE "input1000000.txt"
-#define OUT_FILE "out1000000.txt"
+#define FILE_SIZE 16384
+#define K_FILES 1000
 
 long long no_of_iterations;
 long long no_of_files;
+string inp_file;
+string out_file;
+string cwd;
 
 struct heapele
 {
@@ -29,13 +32,6 @@ long long convertTolong(string num)
     long long x = 0;
     con >> x;
     return x;
-}
-void printArray(vector<struct heapele> v)
-{
-    for (int i = 0; i < v.size(); ++i)
-        cout << v[i].num << " ";
- 
-    cout << "\n";
 }
 void swap(struct heapele **p, struct heapele **q)
 {
@@ -94,14 +90,14 @@ void generateFiles()
     vector<long long> result;
     string data;
     ifstream infile;
-    infile.open(INP_FILE, ios::in);
+    infile.open(inp_file, ios::in);
     infile >> data;
     infile.close();
 
     stringstream linestream(data);
     string value;
     long long count = 0;
-    string fname = "/home/kiranmai/IIIT/DSA/DSA assignments/Assignment 4/files/f";
+    string fname = cwd + "/files/f";
     no_of_files = 0;
     ofstream outfile;
     bool flag = 0;
@@ -141,40 +137,21 @@ void generateFiles()
         no_of_files++;
     }
 }
-void generateRandom()
-{
-    srand((unsigned)time(0));
-    ofstream outfile;
-    outfile.open("test.txt", ios::out);
-    int randomNumber;
-    for (int index = 0; index < 511; index++)
-    {
-        randomNumber = (rand() % 4096) + 1;
-        outfile << randomNumber << ',';
-    }
-    randomNumber = (rand() % 100) + 1;
-    outfile << randomNumber;
-    outfile.close();
-}
-int intlog(double base, double x)
-{
-    return ceil(log(x) / log(base));
-}
-
 void k_way_merge()
 {
     long long file_no = 0;
-    ifstream infile[K_FILES];
-    int lendigit[K_FILES] = {0};
-    string fname = "/home/kiranmai/IIIT/DSA/DSA assignments/Assignment 4/files/f";
-    // no_of_iterations = 1;
+    ifstream *infile = new ifstream[K_FILES];
+    vector<long long> lendigit(K_FILES);
+    string fname = cwd + "/files/f";
+    vector<string> filenames(K_FILES);
     while ((no_of_files - file_no) > K_FILES)
     {
         vector<struct heapele> heap;
-        for (int i = 0; i < K_FILES; i++)
+        for (long long i = 0; i < K_FILES; i++)
         {
             string name = fname + to_string(file_no) + ".txt";
             infile[i].open(name, ios::in);
+            filenames[i] = name;
             string data;
             infile[i] >> data;
 
@@ -195,17 +172,24 @@ void k_way_merge()
         no_of_files++;
         ofstream outfile;
         outfile.open(name, ios::out);
+        if (!outfile)
+        {
+            cout << "unable to open file!";
+            exit(-1);
+        }
         while (heap.size() > 0)
         {
             struct heapele ele = extract_min(heap);
             outfile << to_string(ele.num) << ",";
-            long index = ele.index;
+            long long index = ele.index;
 
             string data = "";
             infile[index].seekg(lendigit[index], infile[index].beg);
             if (infile[index].peek() == EOF)
             {
                 infile[index].close();
+                remove(filenames[index].c_str());
+                filenames[index] = "";
                 continue;
             }
             infile[index] >> data;
@@ -219,12 +203,13 @@ void k_way_merge()
         }
         outfile.close();
     }
-    long rem = no_of_files - file_no;
+    long long rem = no_of_files - file_no;
     vector<struct heapele> heap;
-    for (int i = 0; i < rem; i++)
+    for (long long i = 0; i < rem; i++)
     {
         string name = fname + to_string(file_no) + ".txt";
         infile[i].open(name, ios::in);
+        filenames[i] = name;
         string data;
         infile[i] >> data;
 
@@ -242,15 +227,19 @@ void k_way_merge()
     }
     build_heap(heap);
     no_of_files++;
-    fname = "/home/kiranmai/IIIT/DSA/DSA assignments/Assignment 4/";
-    string name = fname + OUT_FILE;
+    fname = cwd + "/";
+    string name = fname + out_file;
     ofstream outfile;
     outfile.open(name, ios::out);
+    if (!outfile)
+    {
+        cout << "unable to open file";
+        exit(-1);
+    }
     while (heap.size() > 0)
     {
         struct heapele ele = extract_min(heap);
-
-        long index = ele.index;
+        long long index = ele.index;
 
         string data = "";
         infile[index].seekg(lendigit[index], infile[index].beg);
@@ -265,6 +254,7 @@ void k_way_merge()
         if (infile[index].peek() == EOF)
         {
             infile[index].close();
+            remove(filenames[index].c_str());
             continue;
         }
         infile[index] >> data;
@@ -276,9 +266,51 @@ void k_way_merge()
         lendigit[index] += value.size() + 1;
         insert(heap, convertTolong(value), index);
     }
+    delete[] infile;
+    outfile.close();
 }
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc < 3)
+    {
+        cout << "Insufficiet command line arguments" << endl;
+        exit(-1);
+    }
+
+    inp_file = argv[1];
+    out_file = argv[2];
+
+    char tmp[256];
+    getcwd(tmp, 256);
+    cwd = tmp;
+
+    clock_t start, end;
+    start = clock();
+
+    if (mkdir("files", 0777) == -1)
+    {
+        cout << "Unable to create directory";
+        exit(-1);
+    }
+    string fname = cwd + "/";
+    string name = fname + out_file;
+    ofstream outfile;
+    outfile.open(name, ios::out);
+    if (!outfile)
+    {
+        cout << "File not created!";
+        exit(-1);
+    }
+    outfile.close();
     generateFiles();
     k_way_merge();
+    remove("files");
+
+    cout << "CLOCKS_PER_SEC " << CLOCKS_PER_SEC << "\n";
+    cout << "CPU-TIME START " << start << "\n";
+    cout << "CPU-TIME END " << end << "\n";
+    cout << "CPU-TIME END - START " << end - start << "\n";
+    cout << "TIME(SEC) " << static_cast<double>(end - start) / CLOCKS_PER_SEC << "\n";
+
+    return 0;
 }

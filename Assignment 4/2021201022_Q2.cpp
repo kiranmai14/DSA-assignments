@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define FILE_SIZE 16384
+#define FILE_SIZE 100000
 #define K_FILES 1000
 
 long long no_of_iterations;
@@ -89,12 +89,8 @@ void generateFiles()
 {
     vector<long long> result;
     string data;
-    ifstream infile;
-    infile.open(inp_file, ios::in);
-    infile >> data;
-    infile.close();
+    ifstream infile(inp_file);
 
-    stringstream linestream(data);
     string value;
     long long count = 0;
     string fname = cwd + "/files/f";
@@ -102,15 +98,21 @@ void generateFiles()
     ofstream outfile;
     bool flag = 0;
     vector<long long> v;
-    while (getline(linestream, value, ','))
+    while (getline(infile, value, ','))
     {
         if (count == 0)
         {
             flag = 0;
             string name = fname + to_string(no_of_files) + ".txt";
             outfile.open(name, ios::out);
+            if (!outfile)
+            {
+                cout << no_of_files;
+                cout << "unable to open file!";
+                exit(-1);
+            }
         }
-        v.push_back(convertTolong(value));
+        v.push_back(stoll(value));
         count++;
         if (count == FILE_SIZE)
         {
@@ -136,6 +138,7 @@ void generateFiles()
         outfile.close();
         no_of_files++;
     }
+    infile.close();
 }
 void k_way_merge()
 {
@@ -152,17 +155,14 @@ void k_way_merge()
             string name = fname + to_string(file_no) + ".txt";
             infile[i].open(name, ios::in);
             filenames[i] = name;
-            string data;
-            infile[i] >> data;
 
-            stringstream linestream(data);
             string value;
-            getline(linestream, value, ',');
+            getline(infile[i], value, ',');
             lendigit[i] = value.size() + 1;
 
             struct heapele ele;
             ele.index = i;
-            ele.num = convertTolong(value);
+            ele.num = stoll(value);
 
             heap.push_back(ele);
             file_no++;
@@ -174,7 +174,7 @@ void k_way_merge()
         outfile.open(name, ios::out);
         if (!outfile)
         {
-            cout << "unable to open file!";
+            cout << "unable to open file";
             exit(-1);
         }
         while (heap.size() > 0)
@@ -192,14 +192,12 @@ void k_way_merge()
                 filenames[index] = "";
                 continue;
             }
-            infile[index] >> data;
 
             string value;
-            stringstream linestream(data);
-            getline(linestream, value, ',');
+            getline(infile[index], value, ',');
 
             lendigit[index] += value.size() + 1;
-            insert(heap, convertTolong(value), index);
+            insert(heap, stoll(value), index);
         }
         outfile.close();
     }
@@ -210,30 +208,24 @@ void k_way_merge()
         string name = fname + to_string(file_no) + ".txt";
         infile[i].open(name, ios::in);
         filenames[i] = name;
-        string data;
-        infile[i] >> data;
-
-        stringstream linestream(data);
         string value;
-        getline(linestream, value, ',');
+        getline(infile[i], value, ',');
         lendigit[i] = value.size() + 1;
 
         struct heapele ele;
         ele.index = i;
-        ele.num = convertTolong(value);
+        ele.num = stoll(value);
 
         heap.push_back(ele);
         file_no++;
     }
     build_heap(heap);
     no_of_files++;
-    fname = cwd + "/";
-    string name = fname + out_file;
     ofstream outfile;
-    outfile.open(name, ios::out);
+    outfile.open(out_file, ios::out);
     if (!outfile)
     {
-        cout << "unable to open file";
+        cout << "unable to open file" << endl;
         exit(-1);
     }
     while (heap.size() > 0)
@@ -257,14 +249,12 @@ void k_way_merge()
             remove(filenames[index].c_str());
             continue;
         }
-        infile[index] >> data;
 
         string value;
-        stringstream linestream(data);
-        getline(linestream, value, ',');
+        getline(infile[index], value, ',');
 
         lendigit[index] += value.size() + 1;
-        insert(heap, convertTolong(value), index);
+        insert(heap, stoll(value), index);
     }
     delete[] infile;
     outfile.close();
@@ -287,13 +277,10 @@ int main(int argc, char *argv[])
     clock_t start, end;
     start = clock();
 
-    if (mkdir("files", 0777) == -1)
-    {
-        cout << "Unable to create directory";
-        exit(-1);
-    }
     string fname = cwd + "/";
     string name = fname + out_file;
+
+    inp_file = cwd + "/" + inp_file;
     ofstream outfile;
     outfile.open(name, ios::out);
     if (!outfile)
@@ -302,6 +289,13 @@ int main(int argc, char *argv[])
         exit(-1);
     }
     outfile.close();
+    out_file = fname + out_file;
+
+    if (mkdir("files", 0777) == -1)
+    {
+        cout << "Unable to create directory";
+        exit(-1);
+    }
     generateFiles();
     k_way_merge();
     remove("files");
@@ -310,7 +304,7 @@ int main(int argc, char *argv[])
     cout << "CPU-TIME START " << start << "\n";
     cout << "CPU-TIME END " << end << "\n";
     cout << "CPU-TIME END - START " << end - start << "\n";
-    cout << "TIME(SEC) " << static_cast<double>(end - start) / CLOCKS_PER_SEC << "\n";
+    cout << "TIME(MIN) " << static_cast<double>(end - start) / (CLOCKS_PER_SEC * 60) << "\n";
 
     return 0;
 }

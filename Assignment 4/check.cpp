@@ -9,8 +9,8 @@
 #include <algorithm>
 using namespace std;
 
-#define INP_FILE "input100000.txt"
-#define OUT_FILE "outc100000.txt"
+#define INP_FILE "input10000.txt"
+#define OUT_FILE "outc10000.txt"
 
 long long convertTolong(string num)
 {

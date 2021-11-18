@@ -54,26 +54,29 @@ void getLCP(vector<int> &sa, vector<int> &lcp, string inp)
 }
 string longestPalindrome(vector<int> &sa, vector<int> &lcp, string modinp, int orlen)
 {
-    int longlen = 0;
+    int longlen = -1;
     int pos = 0;
     string res = "";
-    for (int i = 0; i < sa.size(); i++)
+    for (int i = 0; i < sa.size() - 1; i++)
     {
         if (lcp[i] > longlen)
         {
-            if ((sa[i] < orlen && sa[i - 1] > orlen) || (sa[i - 1] < orlen && sa[i] > orlen))
+            if ((sa[i] < orlen && sa[i + 1] > orlen) || (sa[i + 1] < orlen && sa[i] > orlen))
             {
                 longlen = lcp[i];
                 pos = sa[i];
-                res = modinp.substr(pos, pos + longlen - 1);
+                res = modinp.substr(pos, longlen);
             }
         }
         else if (lcp[i] == longlen)
         {
-            pos = sa[i];
-            string x = modinp.substr(pos, pos + longlen - 1);
-            if (x < res)
-                res = x;
+            if ((sa[i] < orlen && sa[i + 1] > orlen) || (sa[i + 1] < orlen && sa[i] > orlen))
+            {
+                pos = sa[i];
+                string x = modinp.substr(pos, longlen);
+                if (res > x)
+                    res = x;
+            }
         }
     }
     return res;
@@ -90,7 +93,9 @@ int main()
 
     vector<int> sa(modinp.size()), lcp(modinp.size());
     getSuffixArray(sa, modinp);
+   
     getLCP(sa, lcp, modinp);
+    
 
     cout << longestPalindrome(sa, lcp, modinp, orlen) << endl;
 }

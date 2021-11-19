@@ -300,11 +300,11 @@ int main(int argc, char *argv[])
     k_way_merge();
     remove("files");
 
-    cout << "CLOCKS_PER_SEC " << CLOCKS_PER_SEC << "\n";
-    cout << "CPU-TIME START " << start << "\n";
-    cout << "CPU-TIME END " << end << "\n";
-    cout << "CPU-TIME END - START " << end - start << "\n";
-    cout << "TIME(MIN) " << static_cast<double>(end - start) / (CLOCKS_PER_SEC * 60) << "\n";
+    // cout << "CLOCKS_PER_SEC " << CLOCKS_PER_SEC << "\n";
+    // cout << "CPU-TIME START " << start << "\n";
+    // cout << "CPU-TIME END " << end << "\n";
+    // cout << "CPU-TIME END - START " << end - start << "\n";
+    // cout << "TIME(MIN) " << static_cast<double>(end - start) / (CLOCKS_PER_SEC * 60) << "\n";
 
     return 0;
 }

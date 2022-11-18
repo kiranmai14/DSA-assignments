@@ -1,2 +1,3 @@
 # DSA-assignments
-All the assignments are pushed here
+
+It contains academic assignments related to the course Data Structures and Algorithms (DSA)
